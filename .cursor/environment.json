@@ -1,0 +1,10 @@
+{
+  "snapshot": "snapshot-20250607-f585bd4c-2b16-4861-bae8-aad028ac93a2",
+  "install": "npm install",
+  "terminals": [
+    {
+      "name": "Run Next.js",
+      "command": "npm run dev"
+    }
+  ]
+}
