@@ -1,6 +1,6 @@
 'use client';
 
-import { useOptimistic } from 'react';
+import { useOptimistic, useTransition } from 'react';
 import { toggleTodo, deleteTodo } from '../actions';
 import type { Todo } from '@/lib/schema';
 
@@ -9,6 +9,7 @@ interface TodoListProps {
 }
 
 export default function TodoList({ initialTodos }: TodoListProps) {
+  const [isPending, startTransition] = useTransition();
   const [todos, optimisticUpdate] = useOptimistic(
     initialTodos,
     (state: Todo[], update: { type: 'toggle' | 'delete'; id: number; completed?: boolean }) => {
@@ -25,13 +26,17 @@ export default function TodoList({ initialTodos }: TodoListProps) {
   );
 
   async function handleToggle(id: number, completed: boolean) {
-    optimisticUpdate({ type: 'toggle', id, completed });
-    await toggleTodo(id, completed);
+    startTransition(async () => {
+      optimisticUpdate({ type: 'toggle', id, completed });
+      await toggleTodo(id, completed);
+    });
   }
 
   async function handleDelete(id: number) {
-    optimisticUpdate({ type: 'delete', id });
-    await deleteTodo(id);
+    startTransition(async () => {
+      optimisticUpdate({ type: 'delete', id });
+      await deleteTodo(id);
+    });
   }
 
   return (
@@ -49,6 +54,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
             <button
               onClick={() => handleToggle(todo.id!, !todo.completed)}
               className={todo.completed ? 'dim' : ''}
+              disabled={isPending}
               style={{
                 textAlign: 'left',
                 flex: 1,
@@ -66,6 +72,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
               onClick={() => handleDelete(todo.id!)}
               aria-label="Delete task"
               className="dim"
+              disabled={isPending}
               style={{ marginLeft: '1ch' }}
             >
               [DEL]
