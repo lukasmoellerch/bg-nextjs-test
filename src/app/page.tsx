@@ -68,7 +68,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-8 gap-8">
+    <div className="flex flex-col items-center min-h-screen p-8 gap-8 relative z-10">
       {/* Header */}
       <h1 className="text-2xl font-semibold">Todo List</h1>
 
@@ -81,22 +81,22 @@ export default function Home() {
           value={task}
           onChange={(e) => setTask(e.target.value)}
           placeholder="What needs to be done?"
-          className="flex-1 bg-transparent border border-foreground/20 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-foreground/40"
+          className="flex-1 bg-transparent border border-green-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 placeholder:text-green-700"
         />
         <button
           type="submit"
-          className="px-4 py-2 rounded bg-foreground text-background hover:bg-opacity-90 transition-colors"
+          className="px-4 py-2 border border-green-500 hover:bg-green-500 hover:text-black transition-colors"
         >
           Add
         </button>
       </form>
 
       {/* Todo list */}
-      <ul className="w-full max-w-md space-y-2">
+      <ul className="w-full max-w-md divide-y divide-green-600 border border-green-600">
         {todos.map((todo) => (
           <li
             key={todo.id}
-            className="flex items-center justify-between bg-foreground/5 rounded px-3 py-2"
+            className="grid grid-cols-[1fr_24px] items-center px-3 py-2"
           >
             <button
               onClick={() => toggleTodo(todo.id, !todo.completed)}
@@ -109,14 +109,14 @@ export default function Home() {
             <button
               onClick={() => removeTodo(todo.id)}
               aria-label="Delete task"
-              className="ml-4 text-foreground/60 hover:text-red-500"
+              className="ml-4 text-green-400 hover:text-red-500"
             >
               ✕
             </button>
           </li>
         ))}
         {todos.length === 0 && (
-          <li className="text-center text-foreground/50">No tasks yet</li>
+          <li className="text-center text-green-700 py-4">No tasks yet</li>
         )}
       </ul>
     </div>
