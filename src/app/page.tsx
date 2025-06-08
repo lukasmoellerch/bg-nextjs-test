@@ -68,57 +68,100 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-8 gap-8 relative z-10">
-      {/* Header */}
-      <h1 className="text-2xl font-semibold">Todo List</h1>
+    <div className="min-h-screen relative z-10" style={{ padding: 'calc(var(--char-height) * 2)' }}>
+      <div style={{ width: 'calc(var(--char-width) * 80)', margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{ marginBottom: 'calc(var(--char-height) * 2)' }}>
+          <span>TODO LIST</span>
+        </div>
 
-      {/* Add task */}
-      <form
-        onSubmit={addTodo}
-        className="flex gap-3 w-full max-w-md items-center"
-      >
-        <input
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-          placeholder="What needs to be done?"
-          className="flex-1 bg-transparent border border-green-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 placeholder:text-green-700"
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 border border-green-500 hover:bg-green-500 hover:text-black transition-colors"
-        >
-          Add
-        </button>
-      </form>
+        {/* Add task form */}
+        <form onSubmit={addTodo} style={{ marginBottom: 'calc(var(--char-height) * 2)' }}>
+          <div style={{ display: 'flex' }}>
+            <span>[</span>
+            <input
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              placeholder=" "
+              style={{
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                color: 'inherit',
+                width: 'calc(var(--char-width) * 60)',
+                padding: 0,
+                margin: 0,
+              }}
+              maxLength={60}
+            />
+            <span>]</span>
+            <button
+              type="submit"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'inherit',
+                cursor: 'pointer',
+                padding: 0,
+                marginLeft: 'calc(var(--char-width) * 2)',
+              }}
+            >
+              [ADD]
+            </button>
+          </div>
+        </form>
 
-      {/* Todo list */}
-      <ul className="w-full max-w-md divide-y divide-green-600 border border-green-600">
-        {todos.map((todo) => (
-          <li
-            key={todo.id}
-            className="grid grid-cols-[1fr_24px] items-center px-3 py-2"
-          >
-            <button
-              onClick={() => toggleTodo(todo.id, !todo.completed)}
-              className={`flex-1 text-left ${
-                todo.completed ? 'line-through opacity-50' : ''
-              }`}
-            >
-              {todo.text}
-            </button>
-            <button
-              onClick={() => removeTodo(todo.id)}
-              aria-label="Delete task"
-              className="ml-4 text-green-400 hover:text-red-500"
-            >
-              ✕
-            </button>
-          </li>
-        ))}
-        {todos.length === 0 && (
-          <li className="text-center text-green-700 py-4">No tasks yet</li>
-        )}
-      </ul>
+        {/* Todo list */}
+        <div>
+          {todos.map((todo, index) => (
+            <div key={todo.id} style={{ display: 'flex' }}>
+              <span style={{ width: 'calc(var(--char-width) * 2)' }}>
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span style={{ width: 'calc(var(--char-width) * 2)' }}>
+                {todo.completed ? 'X' : ' '}
+              </span>
+              <button
+                onClick={() => toggleTodo(todo.id, !todo.completed)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: todo.completed ? 'rgba(0, 255, 102, 0.5)' : 'inherit',
+                  textDecoration: todo.completed ? 'line-through' : 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  margin: 0,
+                  textAlign: 'left',
+                  width: 'calc(var(--char-width) * 60)',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {todo.text.padEnd(60, ' ').substring(0, 60)}
+              </button>
+              <button
+                onClick={() => removeTodo(todo.id)}
+                aria-label="Delete task"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'rgba(0, 255, 102, 0.7)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  marginLeft: 'calc(var(--char-width) * 2)',
+                }}
+              >
+                [X]
+              </button>
+            </div>
+          ))}
+          {todos.length === 0 && (
+            <div style={{ color: 'rgba(0, 255, 102, 0.5)' }}>
+              -- NO TASKS YET --
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

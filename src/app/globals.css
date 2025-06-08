@@ -4,6 +4,11 @@
   /* Retro terminal palette */
   --background: #000000;
   --foreground: #00ff66; /* green phosphor */
+  
+  /* Character grid dimensions */
+  --char-width: 1ch;
+  --char-height: 1.5ex;
+  --font-size: 16px;
 }
 
 @theme inline {
@@ -19,49 +24,70 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(rgba(0, 255, 102, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 102, 0.15) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-image: linear-gradient(rgba(0, 255, 102, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 102, 0.1) 1px, transparent 1px);
+  background-size: var(--char-width) var(--char-height);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Force character grid alignment */
+* {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace !important;
+  font-size: var(--font-size) !important;
+  line-height: var(--char-height) !important;
+  letter-spacing: 0 !important;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--font-size);
+  line-height: var(--char-height);
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   caret-color: var(--foreground);
+  margin: 0;
+  padding: 0;
 }
 
-/* Improve headings in monospace */
+/* Headings same size as everything else */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-weight: 400;
+  font-size: var(--font-size) !important;
+  line-height: var(--char-height) !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* Better code blocks */
 code {
-  font-size: 0.875em;
-  padding: 0.125em 0.25em;
-  font-weight: 500;
-  background-color: rgba(0, 255, 102, 0.2);
-  border-radius: 0.25em;
+  font-size: var(--font-size) !important;
+  padding: 0;
+  font-weight: 400;
+  background-color: transparent;
 }
 
 /* Improve button text */
-button, a {
-  font-weight: 500;
-  letter-spacing: 0;
+button, input, a {
+  font-weight: 400;
+  font-size: var(--font-size) !important;
+  line-height: var(--char-height) !important;
 }
 
-/* Adjust small text */
-.text-sm {
-  font-size: 13px !important;
-  line-height: 1.4 !important;
+/* Remove all text size variations */
+.text-sm, .text-xs, .text-lg, .text-xl, .text-2xl {
+  font-size: var(--font-size) !important;
+  line-height: var(--char-height) !important;
+}
+
+/* Grid-aligned containers */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--char-width));
+  grid-auto-rows: var(--char-height);
+  width: 100%;
+  height: 100%;
 }
