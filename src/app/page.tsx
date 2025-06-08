@@ -68,98 +68,97 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen relative z-10" style={{ padding: 'calc(var(--char-height) * 2)' }}>
-      <div style={{ width: 'calc(var(--char-width) * 80)', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ marginBottom: 'calc(var(--char-height) * 2)' }}>
-          <span>TODO LIST</span>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="terminal w-full max-w-2xl">
+        {/* Terminal Header */}
+        <div className="terminal-header">
+          <span>TERMINAL v1.0 - TODO LIST</span>
         </div>
-
-        {/* Add task form */}
-        <form onSubmit={addTodo} style={{ marginBottom: 'calc(var(--char-height) * 2)' }}>
-          <div style={{ display: 'flex' }}>
-            <span>[</span>
+        
+        {/* Terminal Body */}
+        <div style={{ padding: 'calc(var(--char-height) * 1.5)' }}>
+          {/* Command prompt for adding tasks */}
+          <form onSubmit={addTodo} className="flex items-baseline">
+            <span className="dim">&gt; </span>
             <input
               value={task}
               onChange={(e) => setTask(e.target.value)}
-              placeholder=" "
+              placeholder="add task..."
               style={{
                 background: 'transparent',
                 border: 'none',
                 outline: 'none',
                 color: 'inherit',
-                width: 'calc(var(--char-width) * 60)',
+                flex: 1,
                 padding: 0,
                 margin: 0,
+                minWidth: 0,
               }}
-              maxLength={60}
+              className={task ? '' : 'dim'}
             />
-            <span>]</span>
-            <button
-              type="submit"
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'inherit',
-                cursor: 'pointer',
-                padding: 0,
-                marginLeft: 'calc(var(--char-width) * 2)',
-              }}
-            >
-              [ADD]
-            </button>
-          </div>
-        </form>
+            <span className="cursor"></span>
+          </form>
 
-        {/* Todo list */}
-        <div>
-          {todos.map((todo, index) => (
-            <div key={todo.id} style={{ display: 'flex' }}>
-              <span style={{ width: 'calc(var(--char-width) * 2)' }}>
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <span style={{ width: 'calc(var(--char-width) * 2)' }}>
-                {todo.completed ? 'X' : ' '}
-              </span>
-              <button
-                onClick={() => toggleTodo(todo.id, !todo.completed)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: todo.completed ? 'rgba(0, 255, 102, 0.5)' : 'inherit',
-                  textDecoration: todo.completed ? 'line-through' : 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  margin: 0,
-                  textAlign: 'left',
-                  width: 'calc(var(--char-width) * 60)',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {todo.text.padEnd(60, ' ').substring(0, 60)}
-              </button>
-              <button
-                onClick={() => removeTodo(todo.id)}
-                aria-label="Delete task"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'rgba(0, 255, 102, 0.7)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  marginLeft: 'calc(var(--char-width) * 2)',
-                }}
-              >
-                [X]
-              </button>
-            </div>
-          ))}
-          {todos.length === 0 && (
-            <div style={{ color: 'rgba(0, 255, 102, 0.5)' }}>
-              -- NO TASKS YET --
-            </div>
-          )}
+          {/* Divider */}
+          <div style={{ 
+            margin: 'calc(var(--char-height) * 1) 0',
+            borderBottom: '1px solid var(--foreground-dim)',
+            opacity: 0.5
+          }}></div>
+
+          {/* Todo list */}
+          <div>
+            {todos.length === 0 ? (
+              <div className="dim" style={{ textAlign: 'center', padding: 'calc(var(--char-height) * 2) 0' }}>
+                -- NO TASKS YET --
+              </div>
+            ) : (
+              todos.map((todo, index) => (
+                <div key={todo.id} className="flex items-baseline" style={{ marginBottom: '2px' }}>
+                  <span className="dim" style={{ minWidth: '3ch', marginRight: '1ch' }}>
+                    [{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <button
+                    onClick={() => toggleTodo(todo.id, !todo.completed)}
+                    className={todo.completed ? 'dim' : ''}
+                    style={{
+                      textAlign: 'left',
+                      flex: 1,
+                      textDecoration: todo.completed ? 'line-through' : 'none',
+                      minWidth: 0,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {todo.completed ? '[X] ' : '[ ] '}
+                    {todo.text}
+                  </button>
+                  <button
+                    onClick={() => removeTodo(todo.id)}
+                    aria-label="Delete task"
+                    className="dim"
+                    style={{ marginLeft: '1ch' }}
+                  >
+                    [DEL]
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Status line */}
+          <div style={{ 
+            marginTop: 'calc(var(--char-height) * 2)',
+            paddingTop: 'calc(var(--char-height) * 0.5)',
+            borderTop: '1px solid var(--foreground-dim)',
+            opacity: 0.5
+          }}>
+            <span className="dim">
+              {todos.length} task{todos.length !== 1 ? 's' : ''} | 
+              {' '}{todos.filter(t => t.completed).length} completed
+            </span>
+          </div>
         </div>
       </div>
     </div>
