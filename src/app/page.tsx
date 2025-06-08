@@ -11,7 +11,6 @@ interface Todo {
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [task, setTask] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
 
   // Fetch todos from the API on mount
   useEffect(() => {
@@ -78,8 +77,6 @@ export default function Home() {
             value={task}
             onChange={(e) => setTask(e.target.value)}
             placeholder="add task..."
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
             style={{
               background: 'transparent',
               border: 'none',
@@ -92,7 +89,6 @@ export default function Home() {
             }}
             className={task ? '' : 'dim'}
           />
-          {isFocused && <span className="cursor"></span>}
         </form>
 
         {/* Divider */}
