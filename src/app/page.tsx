@@ -12,40 +12,60 @@ export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [task, setTask] = useState('');
 
-  // Load todos from localStorage on first render
+  // Fetch todos from the API on mount
   useEffect(() => {
-    const stored = localStorage.getItem('todos');
-    if (stored) {
-      try {
-        setTodos(JSON.parse(stored));
-      } catch {
-        // ignore malformed json
-      }
-    }
+    fetch('/api/todos')
+      .then((res) => res.json())
+      .then(setTodos)
+      .catch(console.error);
   }, []);
 
-  // Persist todos whenever they change
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
-  const addTodo = (e: FormEvent<HTMLFormElement>) => {
+  const addTodo = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!task.trim()) return;
-    setTodos([
-      ...todos,
-      { id: Date.now(), text: task.trim(), completed: false },
-    ]);
-    setTask('');
+    const text = task.trim();
+    if (!text) return;
+    try {
+      const res = await fetch('/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const newTodo: Todo = await res.json();
+      setTodos((prev) => [...prev, newTodo]);
+      setTask('');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const toggleTodo = (id: number) =>
-    setTodos((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-    );
+  const toggleTodo = async (id: number, completed: boolean) => {
+    try {
+      const res = await fetch('/api/todos', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, completed }),
+      });
+      const updated: Todo = await res.json();
+      setTodos((prev) =>
+        prev.map((t) => (t.id === updated.id ? updated : t))
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  const removeTodo = (id: number) =>
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+  const removeTodo = async (id: number) => {
+    try {
+      await fetch('/api/todos', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center min-h-screen p-8 gap-8">
@@ -79,7 +99,7 @@ export default function Home() {
             className="flex items-center justify-between bg-foreground/5 rounded px-3 py-2"
           >
             <button
-              onClick={() => toggleTodo(todo.id)}
+              onClick={() => toggleTodo(todo.id, !todo.completed)}
               className={`flex-1 text-left ${
                 todo.completed ? 'line-through opacity-50' : ''
               }`}
