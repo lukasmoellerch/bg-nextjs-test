@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 import { FormEvent, useEffect, useState } from 'react';
 
 interface Todo {
@@ -51,16 +50,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen p-8 gap-8">
       {/* Header */}
-      <h1 className="text-2xl font-semibold flex items-center gap-2">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={22}
-        />
-        Todo List
-      </h1>
+      <h1 className="text-2xl font-semibold">Todo List</h1>
 
       {/* Add task */}
       <form
