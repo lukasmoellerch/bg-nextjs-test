@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Retro terminal palette */
+  --background: #0a0a0a;
+  --foreground: #33ff33;
+  --foreground-dim: #229922;
+  --foreground-bright: #66ff66;
+  --amber: #ffb000;
+  
+  /* Character grid dimensions */
+  --char-width: 1ch;
+  --char-height: 1.4em;
+  --font-size: clamp(14px, 2.5vw, 18px);
 }
 
 @theme inline {
@@ -13,60 +22,168 @@
   --font-jetbrains-mono: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* CRT monitor effect */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    /* scanlines */
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 2;
 }
 
-/* Modern monospace typography with JetBrains Mono */
+/* Phosphor glow effect */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Base styles */
 * {
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace !important;
-  letter-spacing: -0.01em;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Courier New', monospace !important;
+  font-size: var(--font-size) !important;
+  line-height: var(--char-height) !important;
+  letter-spacing: 0.05em !important;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--font-size);
+  line-height: var(--char-height);
   font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 
+    0 0 3px currentColor,
+    0 0 5px currentColor,
+    0 0 10px currentColor;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* Improve headings in monospace */
+/* Remove input styling */
+input {
+  text-shadow: inherit;
+  caret-color: var(--foreground);
+}
+
+/* Blinking cursor */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 1ch;
+  height: var(--char-height);
+  background: var(--foreground);
+  animation: blink 1s infinite;
+  vertical-align: text-bottom;
+}
+
+/* Text variations */
+.dim {
+  color: var(--foreground-dim);
+  text-shadow: 
+    0 0 2px currentColor,
+    0 0 4px currentColor;
+}
+
+.bright {
+  color: var(--foreground-bright);
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor;
+}
+
+/* Remove all default styles */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-weight: 400;
+  font-size: var(--font-size) !important;
+  line-height: var(--char-height) !important;
+  margin: 0;
+  padding: 0;
 }
 
-/* Better code blocks */
-code {
-  font-size: 0.875em;
-  padding: 0.125em 0.25em;
-  font-weight: 500;
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 0.25em;
+button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  code {
-    background-color: rgba(255, 255, 255, 0.05);
+button:hover {
+  color: var(--foreground-bright);
+}
+
+/* ASCII box drawing */
+.box-top { border-top: 2px solid var(--foreground-dim); }
+.box-bottom { border-bottom: 2px solid var(--foreground-dim); }
+.box-left { border-left: 2px solid var(--foreground-dim); }
+.box-right { border-right: 2px solid var(--foreground-dim); }
+
+/* Remove focus outlines */
+*:focus {
+  outline: none;
+}
+
+/* Typing effect */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.typing {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.15s steps(40, end);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  :root {
+    --font-size: 14px;
+  }
+  
+  .terminal {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 }
 
-/* Improve button text */
-button, a {
-  font-weight: 500;
-  letter-spacing: 0;
+/* Improve input placeholder styling */
+input::placeholder {
+  color: var(--foreground-dim);
+  opacity: 0.7;
 }
 
-/* Adjust small text */
-.text-sm {
-  font-size: 13px !important;
-  line-height: 1.4 !important;
+/* Smooth transitions */
+* {
+  transition: color 0.15s ease, text-shadow 0.15s ease;
 }
