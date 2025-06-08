@@ -2,13 +2,16 @@
 
 :root {
   /* Retro terminal palette */
-  --background: #000000;
-  --foreground: #00ff66; /* green phosphor */
+  --background: #0a0a0a;
+  --foreground: #33ff33;
+  --foreground-dim: #229922;
+  --foreground-bright: #66ff66;
+  --amber: #ffb000;
   
   /* Character grid dimensions */
   --char-width: 1ch;
-  --char-height: 1.5ex;
-  --font-size: 16px;
+  --char-height: 1.4em;
+  --font-size: 18px;
 }
 
 @theme inline {
@@ -19,24 +22,44 @@
   --font-jetbrains-mono: var(--font-jetbrains-mono);
 }
 
-/* Subtle grid overlay */
+/* CRT monitor effect */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(rgba(0, 255, 102, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 102, 0.1) 1px, transparent 1px);
-  background-size: var(--char-width) var(--char-height);
+  background: 
+    /* scanlines */
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
   pointer-events: none;
-  z-index: 0;
+  z-index: 2;
 }
 
-/* Force character grid alignment */
+/* Phosphor glow effect */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Base styles */
 * {
-  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace !important;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Courier New', monospace !important;
   font-size: var(--font-size) !important;
   line-height: var(--char-height) !important;
-  letter-spacing: 0 !important;
+  letter-spacing: 0.05em !important;
 }
 
 body {
@@ -46,14 +69,70 @@ body {
   font-size: var(--font-size);
   line-height: var(--char-height);
   font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  caret-color: var(--foreground);
+  text-shadow: 
+    0 0 3px currentColor,
+    0 0 5px currentColor,
+    0 0 10px currentColor;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
-/* Headings same size as everything else */
+/* Remove input styling */
+input {
+  text-shadow: inherit;
+  caret-color: var(--foreground);
+}
+
+/* Blinking cursor */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor::after {
+  content: "█";
+  animation: blink 1s infinite;
+  color: var(--foreground);
+}
+
+/* Terminal container */
+.terminal {
+  background: var(--background);
+  border: 2px solid var(--foreground-dim);
+  box-shadow: 
+    0 0 20px rgba(51, 255, 51, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.terminal-header {
+  background: var(--foreground-dim);
+  color: var(--background);
+  padding: 0 1ch;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+/* Text variations */
+.dim {
+  color: var(--foreground-dim);
+  text-shadow: 
+    0 0 2px currentColor,
+    0 0 4px currentColor;
+}
+
+.bright {
+  color: var(--foreground-bright);
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor;
+}
+
+/* Remove all default styles */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
   font-size: var(--font-size) !important;
@@ -62,32 +141,40 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
 }
 
-/* Better code blocks */
-code {
-  font-size: var(--font-size) !important;
+button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: pointer;
   padding: 0;
-  font-weight: 400;
-  background-color: transparent;
+  margin: 0;
 }
 
-/* Improve button text */
-button, input, a {
-  font-weight: 400;
-  font-size: var(--font-size) !important;
-  line-height: var(--char-height) !important;
+button:hover {
+  color: var(--foreground-bright);
 }
 
-/* Remove all text size variations */
-.text-sm, .text-xs, .text-lg, .text-xl, .text-2xl {
-  font-size: var(--font-size) !important;
-  line-height: var(--char-height) !important;
+/* ASCII box drawing */
+.box-top { border-top: 2px solid var(--foreground-dim); }
+.box-bottom { border-bottom: 2px solid var(--foreground-dim); }
+.box-left { border-left: 2px solid var(--foreground-dim); }
+.box-right { border-right: 2px solid var(--foreground-dim); }
+
+/* Remove focus outlines */
+*:focus {
+  outline: none;
 }
 
-/* Grid-aligned containers */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, var(--char-width));
-  grid-auto-rows: var(--char-height);
-  width: 100%;
-  height: 100%;
+/* Typing effect */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.typing {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.15s steps(40, end);
 }
