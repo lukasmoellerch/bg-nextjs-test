@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import * as schema from './schema';
+import * as schema from '@/lib/schema';
 
 // Initialize a SQLite database file in the project root directory.
 // The file will automatically be created if it does not exist.
