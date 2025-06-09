@@ -31,73 +31,88 @@ export default function CreateIssueForm() {
 
   if (!isExpanded) {
     return (
-      <div className="mb-6">
-        <button
-          onClick={() => setIsExpanded(true)}
-          className="w-full text-left p-4 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
-        >
-          <span className="text-gray-500">+ Create new issue...</span>
-        </button>
+      <div className="card-elevated cursor-pointer transition-all duration-300 hover:scale-[1.01]" onClick={() => setIsExpanded(true)}>
+        <div className="p-6 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+            +
+          </div>
+          <div>
+            <h3 className="text-headline font-medium text-gray-900">Create new issue</h3>
+            <p className="text-subheadline text-gray-500 mt-1">
+              Describe a problem, feature request, or improvement
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mb-6">
-      <form onSubmit={handleSubmit} className="border border-gray-300 rounded-lg p-4 space-y-4">
-        <div>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Issue title..."
-            className="w-full text-lg font-medium border-none outline-none resize-none"
-            autoFocus
-          />
-        </div>
-
-        <div>
-          <RichTextEditor
-            content={description}
-            onChange={setDescription}
-            placeholder="Describe the issue..."
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <label htmlFor="priority" className="text-sm font-medium text-gray-700">
-              Priority:
-            </label>
-            <select
-              id="priority"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="border border-gray-300 rounded px-2 py-1 text-sm"
-            >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
+    <div className="animate-slide-up">
+      <div className="card-elevated p-0 overflow-hidden">
+        <form onSubmit={handleSubmit} className="space-y-0">
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+            <h3 className="text-headline font-medium text-gray-900">New Issue</h3>
           </div>
 
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!title.trim()}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Create Issue
-            </button>
+          {/* Title Input */}
+          <div className="px-6 py-4">
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Issue title..."
+              className="input border-0 bg-transparent text-title-3 font-medium placeholder:text-gray-400 px-0 focus:ring-0 focus:shadow-none"
+              autoFocus
+            />
           </div>
-        </div>
-      </form>
+
+          {/* Rich Text Editor */}
+          <div className="px-0">
+            <RichTextEditor
+              content={description}
+              onChange={setDescription}
+              placeholder="Describe the issue in detail..."
+            />
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <label htmlFor="priority" className="text-subheadline font-medium text-gray-700">
+                Priority:
+              </label>
+              <select
+                id="priority"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+                className="input select border-gray-200 bg-white py-2 px-3 text-sm min-w-[100px]"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="btn btn-ghost px-4 py-2"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!title.trim()}
+                className="btn btn-primary px-6 py-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                Create Issue
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
