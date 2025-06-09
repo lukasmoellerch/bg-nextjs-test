@@ -1,10 +1,14 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
-export const todos = sqliteTable('todos', {
+export const issues = sqliteTable('issues', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  text: text('text').notNull(),
-  completed: integer('completed', { mode: 'boolean' }).default(false).notNull(),
+  title: text('title').notNull(),
+  description: text('description').notNull().default(''),
+  status: text('status', { enum: ['open', 'in_progress', 'closed'] }).notNull().default('open'),
+  priority: text('priority', { enum: ['low', 'medium', 'high'] }).notNull().default('medium'),
+  created_at: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updated_at: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-export type Todo = typeof todos.$inferSelect;
-export type NewTodo = typeof todos.$inferInsert;
+export type Issue = typeof issues.$inferSelect;
+export type NewIssue = typeof issues.$inferInsert;
