@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import { addTodo } from '../actions';
 
-export default function AddTodoForm() {
+interface AddTodoFormProps {
+  columnId: number;
+}
+
+export default function AddTodoForm({ columnId }: AddTodoFormProps) {
   const [task, setTask] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
@@ -11,28 +15,17 @@ export default function AddTodoForm() {
     const text = task.trim();
     if (!text) return;
     
-    await addTodo(text);
+    await addTodo(text, columnId);
     setTask('');
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-baseline relative">
-      <span className="dim">&gt; </span>
+    <form onSubmit={handleSubmit} className="w-full">
       <input
         value={task}
         onChange={(e) => setTask(e.target.value)}
-        placeholder="add task..."
-        style={{
-          background: 'transparent',
-          border: 'none',
-          outline: 'none',
-          color: 'inherit',
-          flex: 1,
-          padding: 0,
-          margin: 0,
-          minWidth: 0,
-        }}
-        className={task ? '' : 'dim'}
+        placeholder="+ Add a card"
+        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
     </form>
   );
