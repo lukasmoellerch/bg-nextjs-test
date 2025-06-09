@@ -9,7 +9,7 @@ export async function addTodo(text: string) {
   const trimmedText = text.trim();
   if (!trimmedText) return;
   
-  await db.insert(todos).values({ text: trimmedText }).run();
+  await db.insert(todos).values({ text: trimmedText });
   revalidatePath('/');
 }
 
@@ -17,12 +17,11 @@ export async function toggleTodo(id: number, completed: boolean) {
   await db
     .update(todos)
     .set({ completed })
-    .where(eq(todos.id, id))
-    .run();
+    .where(eq(todos.id, id));
   revalidatePath('/');
 }
 
 export async function deleteTodo(id: number) {
-  await db.delete(todos).where(eq(todos.id, id)).run();
+  await db.delete(todos).where(eq(todos.id, id));
   revalidatePath('/');
 }

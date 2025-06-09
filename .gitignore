@@ -40,5 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# sqlite database
-sqlite.db
+# drizzle
+/drizzle/*.sql
