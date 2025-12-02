@@ -3,9 +3,9 @@
 :root {
   /* Retro terminal palette */
   --background: #0a0a0a;
-  --foreground: #33ff33;
-  --foreground-dim: #229922;
-  --foreground-bright: #66ff66;
+  --foreground: #33aaff;
+  --foreground-dim: #2288cc;
+  --foreground-bright: #66ccff;
   --amber: #ffb000;
   
   /* Character grid dimensions */
